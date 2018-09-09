@@ -23,26 +23,15 @@
  */
 
 /**
- * Set the base include path.
- */
-#includepath "/client/lib/";
-
-/**
- * Include dependencies.
- */
-#include "JSON.jsxinc";
-#include "Logger.jsxinc";
-
-/**
  * Lets get started.
  * @type {boolean}
  */
-$.localize = true;
+// $.localize = true;
 
 /**
  * @type {Logger}
  */
-var logger = new Logger($.fileName, "/var/log/");
+var logger = new Logger($.fileName, "~/Downloads/");
 
 /**
  * Our base object.
@@ -451,6 +440,22 @@ Utils.getFilesInSubfolders = function( srcFolder ) {
         }
     }
     return svgFileList;
+};
+
+/**
+ * Get the basename of a file path.
+ * @param path
+ * @returns {*}
+ */
+Utils.basename = function(path) {
+    var basename = null;
+    try {
+        basename = path.split('/').pop();
+    }
+    catch(e) {
+        Utils.logger($.line + ' - ' + $.fileName + ' - ' + $.error);
+    }
+    return basename;
 };
 
 /**
