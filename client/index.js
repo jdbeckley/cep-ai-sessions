@@ -1,8 +1,9 @@
 /**
- * @author Scott Lewis <scott@iconify.it>
- * @copyright 2017 Scott Lewis
+ * @author Scott Lewis <scott@atomiclotus.net>
+ * @copyright 2018 Scott Lewis
  * @version 1.0.0
  * @url http://github.com/iconifyit
+ * @url https://atomiclotus.net
  *
  * ABOUT:
  *

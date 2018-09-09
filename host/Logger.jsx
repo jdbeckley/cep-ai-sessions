@@ -1,8 +1,24 @@
 /**
- * @author      Scott Lewis <scott@iconify.it>
- * @copyright   2017 Scott Lewis
- * @version     1.0.0
- * @url         http://github.com/iconifyit
+ * @author Scott Lewis <scott@atomiclotus.net>
+ * @copyright 2018 Scott Lewis
+ * @version 1.0.0
+ * @url http://github.com/iconifyit
+ * @url https://atomiclotus.net
+ *
+ * ABOUT:
+ *
+ *    This script creates a simple logger class.
+ *
+ * NO WARRANTIES:
+ *
+ *   You are free to use, modify, and distribute this script as you see fit.
+ *   No credit is required but would be greatly appreciated.
+ *
+ *   THIS SCRIPT IS OFFERED AS-IS WITHOUT ANY WARRANTY OR GUARANTEES OF ANY KIND.
+ *   YOU USE THIS SCRIPT COMPLETELY AT YOUR OWN RISK AND UNDER NO CIRCUMSTANCES WILL
+ *   THE DEVELOPER AND/OR DISTRIBUTOR OF THIS SCRIPT BE HELD LIABLE FOR DAMAGES OF
+ *   ANY KIND INCLUDING LOSS OF DATA OR DAMAGE TO HARDWARE OR SOFTWARE. IF YOU DO
+ *   NOT AGREE TO THESE TERMS, DO NOT USE THIS SCRIPT.
  */
 /**
  * Create a new logger instance.
@@ -17,7 +33,7 @@ function Logger(name, folder) {
      * @type {{folder: string}}
      */
     this.defaults = {
-        folder: "/var/log"
+        folder: Folder.myDocuments + "/logs"
     }
 
     /**
@@ -26,7 +42,9 @@ function Logger(name, folder) {
      */
     this.folder = new Folder(folder || this.defaults.folder);
 
-    // Create the log folder if not exists.
+    /*
+     * Create the log folder if it does not exist.
+     */
     if (! this.folder.exists) {
         this.folder.create();
     }
