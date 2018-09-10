@@ -131,7 +131,6 @@ var AiSessions = (function(CONFIG) {
         var theFile = new File(decodeURI(filepath));
 
         if (theFile.exists) {
-
             try {
                 var session = Utils.read_json_file(theFile);
 

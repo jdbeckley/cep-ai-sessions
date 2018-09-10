@@ -34,10 +34,6 @@ $(function() {
 
     csInterface.evalScript("getDocCount()", setDocCount);
 
-    console.log(csInterface.getSystemPath(
-        SystemPath.MY_DOCUMENTS
-    ));
-
     /**
      * Shows a message in the palette.
      * @param text
@@ -148,21 +144,22 @@ $(function() {
                 $save.removeAttr('disabled');
             }
 
-            $select.on('change',  function() {
+            $select.change(function() {
                 $open.removeAttr('disabled');
             });
 
-            $('option', $select).on( 'doubleClick', function() {
-                $open.removeAttr('disabled');
-                csxOpenSession( $(this).val() );
-            });
+            //@TODO: double-click causes illustrator to lock up.
+            // $select.dblclick(function() {
+            //     $open.removeAttr('disabled');
+            //     csxOpenSession($select.val());
+            // });
 
-            $open.on('mouseup', function() {
-                csxOpenSession( $select.val() );
+            $open.mouseup(function() {
+                csxOpenSession($select.val());
                 $open.blur();
             });
 
-            $save.on('mouseup', function() {
+            $save.mouseup(function() {
                 csxSaveSession("doSaveCallback()");
                 $save.blur();
             });
