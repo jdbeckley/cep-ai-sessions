@@ -6,7 +6,7 @@ Ai-Sessions is an extension for Adobe Illustrator that will save the file paths 
 
 # CREDITS
  
-You are free to use, modify, and distribute this script as you see fit. No credit is required but would be greatly appreciated.
+You are free to use, modify, and distribute this script as you see fit as long as you maintain the copyright notices in the original source files. A link to the [Atomic Lotus website](https://atomiclotus.net) would be greatly appreciated as well. You must also extend the same license to users of your code. This is not to say that your original code must be open source, but the code from this project must remain free and open forever.
 
 Scott Lewis
 * scott@atomiclotus.net
@@ -14,7 +14,7 @@ Scott Lewis
 
 # Donations
 
-Donations help open source developers continue to create free resources. You can donate to this project via [my PayPal page](https://paypal.me/iconify).
+If you find this extension useful, please donate even if just the price of a cup of coffee. Donations help open source developers continue to create free resources. You can donate to this project via [my PayPal page](https://paypal.me/iconify).
 
 # DISCLAIMER OF LIABILITY
 
