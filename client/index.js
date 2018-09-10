@@ -85,7 +85,7 @@ $(function() {
      * @param   {string} theFile
      * @returns {string}
      */
-    function getSessionDate(theFile) {
+    function formatSessionDate(theFile) {
         var fileName = basename(theFile)
             .replace('.json', '')
             .replace('ai-', '');
@@ -93,7 +93,14 @@ $(function() {
         var bits = fileName.split('-');
         var rev  = bits.length == 4 ? bits.pop() : 1;
 
-        var dateString = new Date(bits.slice(0, 3).join('-')).toDateString();
+        var yy = bits[0];
+        var mm = bits[1] - 1;
+        var dd = bits[2];
+        var hh = 12;
+        var mn = 01;
+        var ss = 01;
+
+        var dateString = new Date(yy, mm, dd, hh, mn, ss).toDateString();
 
         var bits = dateString.split(' ');
         dateString = []
@@ -111,6 +118,8 @@ $(function() {
      * @param {*} result
      */
     function initUserInterface(result) {
+
+        console.log(result);
 
         var $message = $("#message");
         var $select  = $("#sessions");
@@ -136,7 +145,7 @@ $(function() {
                 var theFile = sessions[i];
                 var $option = $("<option/>");
                 $option.val(basename(theFile));
-                $option.text(getSessionDate(theFile));
+                $option.text(formatSessionDate(theFile));
                 $select.append($option);
             }
 
@@ -148,78 +157,17 @@ $(function() {
                 $open.removeAttr('disabled');
             });
 
-            //@TODO: double-click causes illustrator to lock up.
-            // $select.dblclick(function() {
-            //     $open.removeAttr('disabled');
-            //     csxOpenSession($select.val());
-            // });
-
             $open.mouseup(function() {
                 csxOpenSession($select.val());
                 $open.blur();
             });
 
             $save.mouseup(function() {
-                csxSaveSession("doSaveCallback()", initUserInterface);
+                csxSaveSession(initUserInterface);
                 $save.blur();
             });
         }
     };
-    //
-    // function updateSessionsList(result) {
-    //     var $message = $("#message");
-    //     var $select  = $("#sessions");
-    //     var $open    = $("#open-button");
-    //     var $save    = $("#save-button");
-    //     var sessions = eval(result);
-    //
-    //     clearMessage();
-    //
-    //     if (typeof(sessions) === 'string') {
-    //         showMessage(result);
-    //         return;
-    //     }
-    //
-    //     if (! sessions.length) {
-    //         showMessage("You have no saved sessions");
-    //     }
-    //     else {
-    //
-    //         $('option', $select).remove();
-    //
-    //         for (i=0; i < sessions.length; i++) {
-    //             var theFile = sessions[i];
-    //             var $option = $("<option/>");
-    //             $option.val(basename(theFile));
-    //             $option.text(getSessionDate(theFile));
-    //             $select.append($option);
-    //         }
-    //
-    //         if (window.docCount > 0) {
-    //             $save.removeAttr('disabled');
-    //         }
-    //
-    //         $select.change(function() {
-    //             $open.removeAttr('disabled');
-    //         });
-    //
-    //         //@TODO: double-click causes illustrator to lock up.
-    //         // $select.dblclick(function() {
-    //         //     $open.removeAttr('disabled');
-    //         //     csxOpenSession($select.val());
-    //         // });
-    //
-    //         $open.mouseup(function() {
-    //             csxOpenSession($select.val());
-    //             $open.blur();
-    //         });
-    //
-    //         $save.mouseup(function() {
-    //             csxSaveSession("doSaveCallback()", updateSessionsList);
-    //             $save.blur();
-    //         });
-    //     }
-    // }
 
     /**
      * Shortcut to `console.log()`
@@ -250,8 +198,8 @@ $(function() {
     /**
      * Call the csInterface to save session.
      */
-    function csxSaveSession() {
-        csInterface.evalScript('doSaveCallback()');
+    function csxSaveSession(theCallback) {
+        csInterface.evalScript('doSaveCallback()', theCallback);
     }
 
     /**

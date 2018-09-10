@@ -90,9 +90,6 @@ var AiSessions = (function(CONFIG) {
             sessions.push(files[i].name);
         }
 
-        logger.info("Utils : " + typeof(Utils));
-        logger.info("JSON : " + typeof(JSON));
-
         if (sessions.length) {
             /**
              * Let's show the newest sessions at the top.
@@ -225,7 +222,7 @@ var AiSessions = (function(CONFIG) {
      */
     return {
         doSaveCallback: function() {
-            doSaveCallback();
+            return doSaveCallback();
         },
 
         doOpenCallback: function(filePath) {
@@ -262,7 +259,8 @@ function doOpenCallback(filepath) {
  * Callback to save session.
  */
 function doSaveCallback() {
-    AiSessions.doSaveCallback();
+   return AiSessions.doSaveCallback();
+   // return getSessionsList();
 };
 
 /**
