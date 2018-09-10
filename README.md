@@ -2,6 +2,8 @@
 
 Ai-Sessions is an extension for Adobe Illustrator that will save the file paths of all open Illustrator files in {MY_DOCUMENTS}/ai-sessions/ai-YYYY-MM-DD-r[0-9].json so you can easily re-open open documents in your "work session". The file paths are saved in a JSON object. 
 
+![Ai Sessions screen capture](./images/ai-sessions.png)
+
 # CREDITS
  
 You are free to use, modify, and distribute this script as you see fit. No credit is required but would be greatly appreciated.
