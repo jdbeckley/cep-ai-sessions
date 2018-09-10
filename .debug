@@ -1,5 +1,5 @@
 <ExtensionList>
-    <Extension Id="com.atomic.ai-merge.panel">
+    <Extension Id="com.atomic.ai-sessions.panel">
        <HostList>
            <Host Name="ILST" Port="8088"/>
         </HostList>
