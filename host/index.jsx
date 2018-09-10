@@ -192,6 +192,8 @@ var AiSessions = (function(CONFIG) {
                     '{"files":[\r' + '    ' + openDocs.join(',\r    ') + '\r]}',
                     true
                 );
+
+                return doGetSessionsList();
             }
             catch(ex) {
                 logger.error(ex.message);
@@ -256,6 +258,9 @@ function doOpenCallback(filepath) {
     AiSessions.doOpenCallback(filepath);
 };
 
+/**
+ * Callback to save session.
+ */
 function doSaveCallback() {
     AiSessions.doSaveCallback();
 };
