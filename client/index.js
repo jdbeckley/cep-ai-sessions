@@ -119,8 +119,6 @@ $(function() {
      */
     function initUserInterface(result) {
 
-        console.log(result);
-
         var $message = $("#message");
         var $select  = $("#sessions");
         var $open    = $("#open-button");
@@ -200,6 +198,15 @@ $(function() {
      */
     function csxSaveSession(theCallback) {
         csInterface.evalScript('doSaveCallback()', theCallback);
+    }
+
+    /**
+     * Wrapper for csInterface.evalScript
+     * @param theScript
+     * @param theCallback
+     */
+    function csEvalScript(theScript, theCallback) {
+        csInterface.evalScript(theScript, theCallback)
     }
 
     /**

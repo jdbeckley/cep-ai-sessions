@@ -10,10 +10,15 @@ Scott Lewis
 * scott@atomiclotus.net
 * https://atomiclotus.net
 
+# Donations
+
+Donations help open source developers continue to create free resources. You can donate to this project via [my PayPal page](https://paypal.me/iconify).
+
 # DISCLAIMER OF LIABILITY
 
 THIS SCRIPT IS OFFERED AS-IS WITHOUT ANY WARRANTY OR GUARANTEES OF ANY KIND. YOU USE THIS SCRIPT COMPLETELY AT YOUR OWN RISK AND UNDER NO CIRCUMSTANCES WILL THE DEVELOPER AND/OR DISTRIBUTOR OF THIS SCRIPT BE HELD LIABLE FOR DAMAGES OF ANY KIND INCLUDING LOSS OF DATA OR DAMAGE TO HARDWARE OR SOFTWARE. IF YOU DO NOT AGREE TO THESE TERMS, DO NOT USE THIS SCRIPT.
 
-## Donations
+# Installation
 
-Donations help open source developers continue to create free resources. You can donate to this project via [my PayPal page](https://paypal.me/iconify).
+This extension has not yet been submitted to Adobe Exchange (but soon). For now, you can download the ZXP file in this repository and use [Anastasiy's Extension Manager](https://install.anastasiy.com) to install. Anastasiy's Extension Manager is a fantastic app. 
+
