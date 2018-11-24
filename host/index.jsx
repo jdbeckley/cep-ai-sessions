@@ -237,6 +237,14 @@ var AiSessions = (function(CONFIG) {
 })(CONFIG);
 
 /**
+ * Update globals DATE_STRING & SESSION_FILENAME;
+ */
+function initSessionFileName() {
+    DATE_STRING = Utils.dateFormat(new Date().getTime());
+    SESSION_FILENAME = "ai-" + DATE_STRING + "-r1.json";
+};
+
+/**
  * Get number of open documents.
  * @returns {*}
  */

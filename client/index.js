@@ -160,6 +160,10 @@ $(function() {
                 $open.blur();
             });
 
+            $('option', $select).dblclick(function() {
+                csxOpenSession($select.val());
+            });
+
             $save.mouseup(function() {
                 csxSaveSession(initUserInterface);
                 $save.blur();
