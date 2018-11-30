@@ -26,6 +26,24 @@
 var DEFAULT_LIST_SIZE = 17;
 
 window.docCount = 0;
+window.docList  = [];
+
+/**
+ * Flyout Menu items.
+ * @type {{
+ *    GET_TOKEN: string,
+ *    ABOUT_PAGE: string,
+ *    HOME_PAGE: string,
+ *    SHOP_PLUGINS: string,
+ *    ENTER_TOKEN: string
+ * }}
+ */
+var MENU_ITEMS = {
+    COPY_SESSION  : "session_copy",
+    DOCUMENTATION : "documentation",
+    DONATE        : "donate",
+    ABOUT         : "about"
+};
 
 $(function() {
 
@@ -74,7 +92,6 @@ $(function() {
      */
     function setDocCount(result) {
         var count = parseInt(result);
-        console.log("Document count : " + count);
         if (! isNaN(count)) {
             window.docCount = count;
         }
@@ -86,31 +103,38 @@ $(function() {
      * @returns {string}
      */
     function formatSessionDate(theFile) {
-        var fileName = basename(theFile)
-            .replace('.json', '')
-            .replace('ai-', '');
 
-        var bits = fileName.split('-');
-        var rev  = bits.length == 4 ? bits.pop() : 1;
+        var fileName = basename(theFile).replace('.json', '');
 
-        var yy = bits[0];
-        var mm = bits[1] - 1;
-        var dd = bits[2];
+        var date = fileName.split('@').shift().split('-');
+        var ts   = parseInt(fileName.split('@').pop());
+
+        time = new Date(ts).toTimeString().split(" ").shift();
+
+        console.log(ts);
+        console.log(new Date(ts).toString());
+        console.log(new Date(ts).toTimeString());
+        console.log(time);
+
+        var yy = date[0];
+        var mm = date[1] - 1;
+        var dd = date[2];
         var hh = 12;
         var mn = 01;
         var ss = 01;
 
-        var dateString = new Date(yy, mm, dd, hh, mn, ss).toDateString();
+        var dateString = (new Date(yy, mm, dd, hh, mn, ss)).toDateString();
+
+        console.log( dateString );
 
         var bits = dateString.split(' ');
-        dateString = []
-            .concat(bits.pop())
-            .concat('-')
-            .concat(bits)
-            .concat('(' + rev + ')')
-            .join(' ');
 
-        return dateString;
+        return []
+            .concat(bits.pop())
+            .concat(':')
+            .concat(bits.slice(1, 3))
+            .concat(['@', time])
+            .join(' ');;
     }
 
     /**
@@ -119,10 +143,12 @@ $(function() {
      */
     function initUserInterface(result) {
 
-        var $message = $("#message");
         var $select  = $("#sessions");
         var $open    = $("#open-button");
         var $save    = $("#save-button");
+
+        console.log( result );
+
         var sessions = eval(result);
 
         clearMessage();
@@ -132,7 +158,7 @@ $(function() {
             return;
         }
 
-        if (! sessions.length) {
+        if (isEmpty(sessions)) {
             showMessage("You have no saved sessions");
         }
         else {
@@ -168,7 +194,58 @@ $(function() {
                 csxSaveSession(initUserInterface);
                 $save.blur();
             });
+
+            initFlyoutMenu();
         }
+    };
+
+    /**
+     * Flyout menu builder.
+     */
+    function initFlyoutMenu() {
+        var Menu = new FlyoutMenu();
+        Menu.add( MENU_ITEMS.COPY_SESSION,  'Copy session files', true, false, false );
+        Menu.add( MENU_ITEMS.DOCUMENTATION, 'Documentation',      true, false, false );
+        Menu.divider();
+        Menu.add( MENU_ITEMS.ABOUT,         'About Atomic Lotus', true, false, false, false);
+        Menu.add( MENU_ITEMS.DONATE,        'Buy me a coffee',    true, false, false, false);
+        Menu.setHandler( flyoutMenuClickedHandler );
+        Menu.build();
+    }
+
+    /**
+     * Flyout menu click handler.
+     * @param event
+     */
+    function flyoutMenuClickedHandler(event) {
+        switch (event.data.menuId) {
+            case MENU_ITEMS.COPY_SESSION :
+                csInterface.evalScript("AiSessions.copySessionFiles()");
+                break;
+
+            case MENU_ITEMS.DOCUMENTATION :
+                openWebAddress('https://github.com/iconifyit/cep-ai-sessions');
+                break;
+
+            case MENU_ITEMS.DONATE :
+                openWebAddress('https://paypal.me/iconify/5');
+                break;
+
+            case MENU_ITEMS.ABOUT :
+                openWebAddress('https://atomiclotus.net/services/');
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Interface to Host to open a web page in the default browser.
+     * @param address
+     */
+    function openWebAddress(address) {
+        csInterface.evalScript('AiSessions.openWebAddress("' + address + '")');
     };
 
     /**
@@ -194,14 +271,14 @@ $(function() {
      * @param filePath
      */
     function csxOpenSession(filePath) {
-        csInterface.evalScript('doOpenCallback("' + filePath + '")');
+        csInterface.evalScript('AiSessions.doOpenCallback("' + filePath + '")');
     }
 
     /**
      * Call the csInterface to save session.
      */
     function csxSaveSession(theCallback) {
-        csInterface.evalScript('doSaveCallback()', theCallback);
+        csInterface.evalScript('AiSessions.doSaveCallback()', theCallback);
     }
 
     /**
@@ -263,5 +340,5 @@ $(function() {
 
     // Run now
 
-    csInterface.evalScript('getSessionsList()', initUserInterface);
+    csInterface.evalScript('AiSessions.initSessionsList()', initUserInterface);
 });

@@ -33,12 +33,9 @@ $.localize = true;
 #include "Logger.jsx"
 #include "JSON.jsx"
 #include "Utils.jsx"
+#include "Helpers.jsx"
 
-/**
- * Set some global variables.
- */
-var DATE_STRING      = Utils.dateFormat(new Date().getTime());
-var SESSION_FILENAME = "ai-" + DATE_STRING + "-r1.json";
+var SESSION_NAME = getSessionName();
 
 /**
  * @type {{
@@ -60,24 +57,27 @@ var CONFIG = {
     DOCUMENTS        : Folder.myDocuments,
     SRCFOLDER        : Folder.myDocuments + '/ai-sessions',
     LOGFOLDER        : Folder.myDocuments + '/ai-sessions/logs',
-    LOGFILE          : Folder.myDocuments + '/ai-sessions/logs/ai-log-'  + DATE_STRING  + '-r1.log',
+    LOGFILE          : Folder.myDocuments + '/ai-sessions/logs/' + SESSION_NAME  + '.log',
     NO_OPEN_DOCS     : localize({en_US: 'There are no open docs to save for this session'}),
     NO_DOC_SELECTED  : localize({en_US: 'You have not selected a session to open'}),
+    NO_DOCS_TO_COPY  : localize({en_US: 'There are no open documents to copy'}),
     SESSION_SAVED    : localize({en_US: 'Your Session Was Saved!'}),
     JSON_EXT         : ".json",
     TEXT_EXT         : ".txt"
 };
 
 /**
+ * The local scope logger object.
+ * @type {Logger}
+ */
+var logger = new Logger(CONFIG.APP_NAME, CONFIG.LOGFOLDER);
+
+logger.info("init " + SESSION_NAME);
+
+/**
  * Run the script using the Module patter.
  */
 var AiSessions = (function(CONFIG) {
-
-    /**
-     * The local scope logger object.
-     * @type {Logger}
-     */
-    var logger = new Logger(CONFIG.APP_NAME, CONFIG.LOGFOLDER);
 
     /**
      * Populates the sessions select list.
@@ -161,31 +161,21 @@ var AiSessions = (function(CONFIG) {
      */
     function doSaveCallback() {
 
+        var openDocs, sessionName;
+
         if (app.documents.length == 0) {
             alert(CONFIG.NO_OPEN_DOCS);
         }
         else {
 
             try {
-                var openDocs = [];
-                for (x=0; x<app.documents.length; x++) {
-                    openDocs.push(
-                        '"' + app.documents[x].path + "/" + app.documents[x].name + '"'
-                    );
-                }
+                openDocs    = getOpenDocPaths();
+                sessionName = getSessionName();
 
-                var testFile = new File(CONFIG.SRCFOLDER + "/" + SESSION_FILENAME);
-
-                var n = 1;
-                var max = 100;
-                while (testFile.exists && n < max) {
-                    SESSION_FILENAME = "ai-" + DATE_STRING + "-r" + n + CONFIG.JSON_EXT;
-                    testFile = new File(CONFIG.SRCFOLDER + "/" + SESSION_FILENAME);
-                    n++;
-                }
+                CONFIG.LOGFILE = sessionName + ".log";
 
                 Utils.write_file(
-                    CONFIG.SRCFOLDER + "/" + SESSION_FILENAME,
+                    CONFIG.SRCFOLDER + "/" + sessionName + ".json",
                     '{"files":[\r' + '    ' + openDocs.join(',\r    ') + '\r]}',
                     true
                 );
@@ -195,6 +185,80 @@ var AiSessions = (function(CONFIG) {
             catch(ex) {
                 logger.error(ex.message);
             }
+        }
+    };
+
+    /**
+     * Get full paths of all open documents.
+     * @returns {Array}
+     */
+    function getOpenDocPaths() {
+        var openDocs = [];
+        for (x=0; x<app.documents.length; x++) {
+            openDocs.push(
+                '"' + app.documents[x].path + "/" + app.documents[x].name + '"'
+            );
+        }
+        return openDocs;
+    }
+
+    /**
+     * Creates a web shortcut then opens it in the default browser.
+     * @param address
+     * @private
+     */
+    function doOpenWebAddress( address ) {
+        try {
+            Utils.write_exec(
+                Folder.temp + '/' + now() + '-shortcut.url',
+                '[InternetShortcut]' + '\r' + 'URL=' + encodeURI(address) + '\r'
+            );
+        }
+        catch(e) {
+            logger.error(e);
+            prompt(
+                "The web address could not be automatically opened but you " +
+                "can copy & paste the address below to your browser.",
+                address
+            );
+        }
+    };
+
+    function doCopySessionFiles() {
+
+        var theDoc, destination, targetFolderPath;
+
+        if (! app.documents.length) {
+            alert(CONFIG.NO_DOCS_TO_COPY);
+            return;
+        }
+
+        destination = Folder.selectDialog("Choose a folder to copy the open docs to", Folder.myDocuments)
+
+        targetFolderPath = new Folder(destination).absoluteURI;
+
+        logger.info(targetFolderPath);
+
+        try {
+
+            for (i=0; i<app.documents.length; i++) {
+
+                theDoc = new File(app.documents[i].path + "/" + app.documents[i].name);
+
+                if (theDoc.exists) {
+                    try {
+                        theDoc.copy(Utils.getUniqueFileName(targetFolderPath, theDoc.name));
+                    }
+                    catch(ex) {
+                        logger.error(ex.message);
+                    }
+                }
+            }
+
+            new Folder(destination).execute();
+        }
+        catch(ex) {
+            logger.error(ex);
         }
     };
 
@@ -231,18 +295,30 @@ var AiSessions = (function(CONFIG) {
 
         initSessionsList: function() {
             return doGetSessionsList();
+        },
+
+        getOpenDocs : function() {
+            return getOpenDocPaths();
+        },
+
+        openWebAddress : function(address) {
+            return doOpenWebAddress(address);
+        },
+
+        copySessionFiles : function() {
+            return doCopySessionFiles();
         }
     }
 
 })(CONFIG);
 
 /**
- * Update globals DATE_STRING & SESSION_FILENAME;
+ * Create a unique session name.
+ * @returns {string}
  */
-function initSessionFileName() {
-    DATE_STRING = Utils.dateFormat(new Date().getTime());
-    SESSION_FILENAME = "ai-" + DATE_STRING + "-r1.json";
-};
+function getSessionName() {
+    return Utils.dateFormat(new Date().getTime()) + '@' + new Date().getTime();
+}
 
 /**
  * Get number of open documents.
@@ -256,22 +332,6 @@ function getDocCount() {
 }
 
 /**
- * Callback to open the selected session.
- * @param filepath
- */
-function doOpenCallback(filepath) {
-    AiSessions.doOpenCallback(filepath);
-};
-
-/**
- * Callback to save session.
- */
-function doSaveCallback() {
-   return AiSessions.doSaveCallback();
-   // return getSessionsList();
-};
-
-/**
  * Use this to interface from client side.
  * Example: csxScript('log("some text", "info")')
  * @param message
@@ -281,12 +341,3 @@ function csxLogger(message, type) {
     var logger = new Logger(CONFIG.APP_NAME, CONFIG.LOGFOLDER);
     logger.log( message, type );
 }
-
-/**
- * Gets a list of available session files.
- * @returns {*}
- */
-function getSessionsList() {
-    return AiSessions.initSessionsList();
-}
-

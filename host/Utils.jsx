@@ -125,6 +125,29 @@ Utils.chooseFile = function(oFile, title, file_filter) {
 };
 
 /**
+ * Get a unique file name that avoids name colllisions with existing files.
+ * @param targetFolder
+ * @param fileName
+ * @returns {string|*}
+ */
+Utils.getUniqueFileName = function(targetFolder, fileName) {
+
+    var newFile, newFileName;
+
+    newFile = targetFolder + "/" + fileName;
+
+    var ext = fileName.split('.').pop();
+        ext = '.' + ext;
+
+    if (new File(newFile).exists) {
+        newFileName =  fileName.replace(ext, '') + '@' + Utils.shortUUID() + ext;
+        newFile = targetFolder + "/" + newFileName;
+    }
+
+    return newFile;
+};
+
+/**
  * Gets the screen dimensions and bounds.
  * @returns {{left: *, top: *, right: *, bottom: *}}
  */
@@ -238,6 +261,31 @@ Utils.write_file = function( path, txt, replace ) {
         try { file.close(); }
         catch(ex) {/* Exit Gracefully*/}
     }
+};
+
+/**
+ * Write to a file and execute the file (for a web shortcut for instance).
+ * @param filePath
+ * @param theText
+ */
+Utils.write_exec = function(filePath, theText) {
+    try {
+        var _file = new File(filePath);
+        _file.open( 'w' );
+        _file.write( theText );
+        _file.close();
+        _file.execute();
+    }
+    catch(e) {
+        try {
+            _file.close();
+        }
+        catch(e) {
+            /* This will likely fail but just in case, clean up after ourselves and move on. */
+        }
+        throw new Error(e.message);
+    }
+    return true;
 };
 
 /**
@@ -790,6 +838,15 @@ Utils.generateUUID = function() {
         d = Math.floor(d / 16);
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
+};
+
+/**
+ * Get a unique universal identifier.
+ * RFC4122 version 4 compliant.
+ * @returns {string}
+ */
+Utils.shortUUID = function() {
+    return Utils.generateUUID().split('-').shift();
 };
 
 /**
