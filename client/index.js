@@ -41,6 +41,7 @@ window.docList  = [];
 var MENU_ITEMS = {
     COLLECT_DOCS  : "collect_open_docs",
     DOCUMENTATION : "documentation",
+    OPEN_LOG_FILE : "open_log_file",
     DONATE        : "donate",
     ABOUT         : "about"
 };
@@ -249,27 +250,13 @@ $(function() {
         }
     }
 
-    function deleteSessionCallback(result) {
-        console.log(result);
-        initUserInterface();
-    }
-
-    function renameSessionCallback(result) {
-        console.log(result);
-        initUserInterface();
-    }
-
-    function openSessionCallback(result) {
-        console.log(result);
-        initUserInterface();
-    }
-
     /**
      * Flyout menu builder.
      */
     function initFlyoutMenu() {
         var Menu = new FlyoutMenu();
         Menu.add( MENU_ITEMS.COLLECT_DOCS,  'Collect Open Files', true, false, false );
+        Menu.add( MENU_ITEMS.OPEN_LOG_FILE, 'Open Log File',      true, false, false );
         Menu.add( MENU_ITEMS.DOCUMENTATION, 'Documentation',      true, false, false );
         Menu.divider();
         Menu.add( MENU_ITEMS.ABOUT,         'About Atomic Lotus', true, false, false, false);
@@ -285,11 +272,15 @@ $(function() {
     function flyoutMenuClickedHandler(event) {
         switch (event.data.menuId) {
             case MENU_ITEMS.COLLECT_DOCS :
-                csInterface.evalScript("AiSessions.doCollectOpenDocs()");
+                csInterface.evalScript("AiSessions.doCollectOpenDocs()", feedback);
                 break;
 
             case MENU_ITEMS.DOCUMENTATION :
                 openWebAddress('https://github.com/iconifyit/cep-ai-sessions');
+                break;
+
+            case MENU_ITEMS.OPEN_LOG_FILE :
+                csInterface.evalScript("AiSessions.openLogFile()", feedback);
                 break;
 
             case MENU_ITEMS.DONATE :

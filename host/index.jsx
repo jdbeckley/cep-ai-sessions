@@ -227,8 +227,10 @@ var AiSessions = (function(CONFIG) {
         catch(e) {
             logger.error(e);
             prompt(
-                "The web address could not be automatically opened but you " +
-                "can copy & paste the address below to your browser.",
+                Utils.i18n(
+                    "The web address could not be automatically opened but you " +
+                    "can copy & paste the address below to your browser."
+                ),
                 address
             );
         }
@@ -252,8 +254,11 @@ var AiSessions = (function(CONFIG) {
         logger.info(fileList);
 
         if (! isEmpty(fileList)) {
-            logger.info("fileList is not empty. Try to copy.");
-            _doCopyFiles(fileList);
+            logger.info(Utils.i18n("fileList is not empty. Try to copy."));
+            return _doCopyFiles(fileList);
+        }
+        else {
+            return Utils.i18n("Cannot collect open docs. File list is empty");
         }
     };
 
@@ -283,7 +288,9 @@ var AiSessions = (function(CONFIG) {
      */
     function _doDeleteSession(sessionFileName) {
         var result = false;
-        if (confirm("Are you sure you want to delete the session `" + sessionFileName + "`?")) {
+
+        var dialogPrompt = Utils.i18n("Are you sure you want to delete the session `%1`?", sessionFileName);
+        if ( confirm(dialogPrompt, sessionFileName) ) {
             if (sessionFile = getSessionFile(sessionFileName)) {
                 result = sessionFile.remove() ?
                     "Session file was deleted" :
@@ -293,7 +300,7 @@ var AiSessions = (function(CONFIG) {
         else {
             result = "NOOO! Don't delete it!";
         }
-        return JSON.stringify({result: result});
+        return JSON.stringify({result: Utils.i18n(result) });
     }
 
     /**
@@ -303,17 +310,19 @@ var AiSessions = (function(CONFIG) {
      */
     function _doRenameSession(sessionFileName) {
         var result = false;
-        if (newName = prompt("Enter a new name for the session `" + sessionFileName + "`?", sessionFileName)) {
+
+        var dialogPrompt = Utils.i18n("Enter a new name for the session `%1`?", sessionFileName);
+        if ( newName = prompt(dialogPrompt, sessionFileName) ) {
             if (newName.toLowerCase().split(".").pop() != "json") {
                 newName += ".json";
             }
             if (sessionFile = getSessionFile(sessionFileName)) {
                 result = sessionFile.rename(newName) ?
                     "Session file was renamed" :
-                    "Session file could not be renamed";
+                    "Session file could not be renamed" ;
             }
         }
-        return JSON.stringify({result: result});
+        return JSON.stringify({result: Utils.i18n(result) });
     }
 
     /**
@@ -348,8 +357,10 @@ var AiSessions = (function(CONFIG) {
      */
     function _doCopyFiles(fileList) {
 
-        destination = Folder.selectDialog("Choose a folder to copy the documents to", Folder.myDocuments)
+        var destination, targetFolderPath, dialogPrompt;
 
+        dialogPrompt     = Utils.i18n("Choose a folder to copy the documents to");
+        destination      = Folder.selectDialog(dialogPrompt, Folder.myDocuments)
         targetFolderPath = new Folder(destination).absoluteURI;
 
         logger.info(targetFolderPath);
@@ -374,7 +385,9 @@ var AiSessions = (function(CONFIG) {
         }
         catch(ex) {
             logger.error(ex);
+            return ex;
         }
+        return Utils.i18n("Files copied successfully");
     }
 
     /**
@@ -385,6 +398,21 @@ var AiSessions = (function(CONFIG) {
     function getSessionFile(sessionFileName) {
         var sessionFile = new File(CONFIG.SRCFOLDER + "/" + sessionFileName);
         return sessionFile.exists ? sessionFile : false ;
+    }
+
+    /**
+     * Private method to open the log file.
+     * @private
+     */
+    function _doOpenLogFile() {
+        try {
+            logger.info("LOG FILE : " + logger.file.absoluteURI);
+            return logger.open();
+        }
+        catch(ex) {
+            logger.error(ex);
+            return ex;
+        }
     }
 
     /**
@@ -429,6 +457,10 @@ var AiSessions = (function(CONFIG) {
 
         doCopySessionDocs : function(sessionFileName) {
             return _doCopySessionDocs(sessionFileName);
+        },
+
+        openLogFile : function() {
+            return _doOpenLogFile();
         }
     }
 

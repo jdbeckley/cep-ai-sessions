@@ -173,5 +173,17 @@ Logger.prototype = {
             }
 
         }
+    },
+
+    /**
+     * Open the log file.
+     */
+    open: function() {
+        if (this.file.exists) {
+            this.file.execute();
+        }
+        else {
+            return "Log file `" + this.file.absoluteURI + "` does not exist";
+        }
     }
 };
