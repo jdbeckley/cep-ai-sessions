@@ -39,7 +39,7 @@ window.docList  = [];
  * }}
  */
 var MENU_ITEMS = {
-    COPY_SESSION  : "session_copy",
+    COLLECT_DOCS  : "collect_open_docs",
     DOCUMENTATION : "documentation",
     DONATE        : "donate",
     ABOUT         : "about"
@@ -49,8 +49,6 @@ $(function() {
 
     // Create an instance of CSInterface.
     var csInterface = new CSInterface();
-
-    csInterface.evalScript("getDocCount()", setDocCount);
 
     /**
      * Shows a message in the palette.
@@ -116,6 +114,10 @@ $(function() {
         console.log(new Date(ts).toTimeString());
         console.log(time);
 
+        console.log("TS : " + ts);
+        console.log("TIME : " + time);
+
+
         var yy = date[0];
         var mm = date[1] - 1;
         var dd = date[2];
@@ -166,10 +168,16 @@ $(function() {
             $('option', $select).remove();
 
             for (i=0; i < sessions.length; i++) {
-                var theFile = sessions[i];
+                var theFile       = sessions[i];
+                var optionText    = decodeURI(theFile.replace(".json", ""));
+                var formattedDate = formatSessionDate(theFile);
+                if (formattedDate.indexOf("Invalid") == -1) {
+                    optionText = formattedDate;
+                }
+
                 var $option = $("<option/>");
                 $option.val(basename(theFile));
-                $option.text(formatSessionDate(theFile));
+                $option.text(optionText);
                 $select.append($option);
             }
 
@@ -190,7 +198,22 @@ $(function() {
                 csxOpenSession($select.val());
             });
 
-            $save.mouseup(function() {
+            $('option').on('contextmenu', function(e) {
+
+                $(this).attr("selected", true);
+
+                try {
+                    csInterface.setContextMenu($("#contextMenu").text(), contextMenuHandler);
+                }
+                catch(ex) {
+                    console.error(ex);
+                }
+                csInterface.addEventListener("com.adobe.csxs.events.contextMenuClicked", contextMenuHandler);
+            });
+
+            $save.off('mouseup').on('mouseup', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 csxSaveSession(initUserInterface);
                 $save.blur();
             });
@@ -199,12 +222,54 @@ $(function() {
         }
     };
 
+    function contextMenuHandler(menuId) {
+
+        var $select  = $("#sessions");
+        var sessionFileName = decodeURI($select.val());
+
+        switch (menuId) {
+            case "copySessionDocs" :
+                csInterface.evalScript("AiSessions.doCopySessionDocs('" + sessionFileName + "')",  refresh);
+                break;
+
+            case "deleteSession" :
+                csInterface.evalScript("AiSessions.doDeleteSession('" + sessionFileName + "')",  refresh);
+                break;
+
+            case "renameSession" :
+                csInterface.evalScript("AiSessions.doRenameSession('" + sessionFileName + "')",  refresh);
+                break;
+
+            case "openSession" :
+                csInterface.evalScript("AiSessions.doOpenSessionFile('" + sessionFileName + "')", refresh);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    function deleteSessionCallback(result) {
+        console.log(result);
+        initUserInterface();
+    }
+
+    function renameSessionCallback(result) {
+        console.log(result);
+        initUserInterface();
+    }
+
+    function openSessionCallback(result) {
+        console.log(result);
+        initUserInterface();
+    }
+
     /**
      * Flyout menu builder.
      */
     function initFlyoutMenu() {
         var Menu = new FlyoutMenu();
-        Menu.add( MENU_ITEMS.COPY_SESSION,  'Copy session files', true, false, false );
+        Menu.add( MENU_ITEMS.COLLECT_DOCS,  'Collect Open Files', true, false, false );
         Menu.add( MENU_ITEMS.DOCUMENTATION, 'Documentation',      true, false, false );
         Menu.divider();
         Menu.add( MENU_ITEMS.ABOUT,         'About Atomic Lotus', true, false, false, false);
@@ -219,8 +284,8 @@ $(function() {
      */
     function flyoutMenuClickedHandler(event) {
         switch (event.data.menuId) {
-            case MENU_ITEMS.COPY_SESSION :
-                csInterface.evalScript("AiSessions.copySessionFiles()");
+            case MENU_ITEMS.COLLECT_DOCS :
+                csInterface.evalScript("AiSessions.doCollectOpenDocs()");
                 break;
 
             case MENU_ITEMS.DOCUMENTATION :
@@ -340,5 +405,9 @@ $(function() {
 
     // Run now
 
-    csInterface.evalScript('AiSessions.initSessionsList()', initUserInterface);
+    function refresh() {
+        csInterface.evalScript('AiSessions.initSessionsList()', initUserInterface);
+    }
+
+    refresh();
 });

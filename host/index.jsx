@@ -169,7 +169,7 @@ var AiSessions = (function(CONFIG) {
         else {
 
             try {
-                openDocs    = getOpenDocPaths();
+                openDocs    = getOpenDocPathsQuoted();
                 sessionName = getSessionName();
 
                 CONFIG.LOGFILE = sessionName + ".log";
@@ -195,9 +195,19 @@ var AiSessions = (function(CONFIG) {
     function getOpenDocPaths() {
         var openDocs = [];
         for (x=0; x<app.documents.length; x++) {
-            openDocs.push(
-                '"' + app.documents[x].path + "/" + app.documents[x].name + '"'
-            );
+            openDocs.push(app.documents[x].path + "/" + app.documents[x].name);
+        }
+        return openDocs;
+    }
+
+    /**
+     * Get full paths of all open documents.
+     * @returns {Array}
+     */
+    function getOpenDocPathsQuoted() {
+        var openDocs = getOpenDocPaths();
+        for (x=0; x<openDocs.length; x++) {
+            openDocs[x] = '"' + openDocs[x] + '"';
         }
         return openDocs;
     }
@@ -224,41 +234,26 @@ var AiSessions = (function(CONFIG) {
         }
     };
 
-    function doCopySessionFiles() {
+    /**
+     * Collection the open documents into the specified folder.
+     * @private
+     */
+    function _doCollectOpenDocs() {
 
-        var theDoc, destination, targetFolderPath;
+        var fileList;
 
         if (! app.documents.length) {
             alert(CONFIG.NO_DOCS_TO_COPY);
             return;
         }
 
-        destination = Folder.selectDialog("Choose a folder to copy the open docs to", Folder.myDocuments)
+        fileList = getOpenDocPaths();
 
-        targetFolderPath = new Folder(destination).absoluteURI;
+        logger.info(fileList);
 
-        logger.info(targetFolderPath);
-
-        try {
-
-            for (i=0; i<app.documents.length; i++) {
-
-                theDoc = new File(app.documents[i].path + "/" + app.documents[i].name);
-
-                if (theDoc.exists) {
-                    try {
-                        theDoc.copy(Utils.getUniqueFileName(targetFolderPath, theDoc.name));
-                    }
-                    catch(ex) {
-                        logger.error(ex.message);
-                    }
-                }
-            }
-
-            new Folder(destination).execute();
-        }
-        catch(ex) {
-            logger.error(ex);
+        if (! isEmpty(fileList)) {
+            logger.info("fileList is not empty. Try to copy.");
+            _doCopyFiles(fileList);
         }
     };
 
@@ -279,6 +274,117 @@ var AiSessions = (function(CONFIG) {
         }
         // names must be equal
         return 0;
+    }
+
+    /**
+     * Private function to delete a session file.
+     * @param sessionFileName
+     * @private
+     */
+    function _doDeleteSession(sessionFileName) {
+        var result = false;
+        if (confirm("Are you sure you want to delete the session `" + sessionFileName + "`?")) {
+            if (sessionFile = getSessionFile(sessionFileName)) {
+                result = sessionFile.remove() ?
+                    "Session file was deleted" :
+                    "Session file could not be deleted";
+            }
+        }
+        else {
+            result = "NOOO! Don't delete it!";
+        }
+        return JSON.stringify({result: result});
+    }
+
+    /**
+     * Private function to rename a session file.
+     * @param sessionFileName
+     * @private
+     */
+    function _doRenameSession(sessionFileName) {
+        var result = false;
+        if (newName = prompt("Enter a new name for the session `" + sessionFileName + "`?", sessionFileName)) {
+            if (newName.toLowerCase().split(".").pop() != "json") {
+                newName += ".json";
+            }
+            if (sessionFile = getSessionFile(sessionFileName)) {
+                result = sessionFile.rename(newName) ?
+                    "Session file was renamed" :
+                    "Session file could not be renamed";
+            }
+        }
+        return JSON.stringify({result: result});
+    }
+
+    /**
+     * Private function to open a session file.
+     * @param sessionFileName
+     * @private
+     */
+    function _doOpenSessionFile(sessionFileName) {
+        if (sessionFile = getSessionFile(sessionFileName)) {
+            sessionFile.execute();
+        }
+    }
+
+    /**
+     * Collect the files in the session to a new location.
+     * @param sessionFileName
+     * @private
+     */
+    function _doCopySessionDocs(sessionFileName) {
+        if (sessionFile = getSessionFile(sessionFileName)) {
+            var json = Utils.read_json_file(sessionFile);
+            if (isDefined(json.files)) {
+                _doCopyFiles(json.files);
+            }
+        }
+    }
+
+    /**
+     * Private function to copy a list of files to a selected folder.
+     * @param fileList
+     * @private
+     */
+    function _doCopyFiles(fileList) {
+
+        destination = Folder.selectDialog("Choose a folder to copy the documents to", Folder.myDocuments)
+
+        targetFolderPath = new Folder(destination).absoluteURI;
+
+        logger.info(targetFolderPath);
+
+        try {
+
+            for (i=0; i < fileList.length; i++) {
+
+                theDoc = new File(fileList[i]);
+
+                if (theDoc.exists) {
+                    try {
+                        theDoc.copy(Utils.getUniqueFileName(targetFolderPath, theDoc.name));
+                    }
+                    catch(ex) {
+                        logger.error(ex.message);
+                    }
+                }
+            }
+
+            new Folder(destination).execute();
+        }
+        catch(ex) {
+            logger.error(ex);
+        }
+    }
+
+    /**
+     * Private function get a File object from the session filename.
+     * @param sessionFileName
+     * @returns {*}
+     */
+    function getSessionFile(sessionFileName) {
+        var sessionFile = new File(CONFIG.SRCFOLDER + "/" + sessionFileName);
+        return sessionFile.exists ? sessionFile : false ;
     }
 
     /**
@@ -305,12 +411,30 @@ var AiSessions = (function(CONFIG) {
             return doOpenWebAddress(address);
         },
 
-        copySessionFiles : function() {
-            return doCopySessionFiles();
+        doCollectOpenDocs : function() {
+            return _doCollectOpenDocs();
+        },
+
+        doDeleteSession : function(sessionFileName) {
+            return _doDeleteSession(sessionFileName);
+        },
+
+        doRenameSession : function(sessionFileName) {
+            return _doRenameSession(sessionFileName);
+        },
+
+        doOpenSessionFile : function(sessionFileName) {
+            _doOpenSessionFile(sessionFileName);
+        },
+
+        doCopySessionDocs : function(sessionFileName) {
+            return _doCopySessionDocs(sessionFileName);
         }
     }
 
 })(CONFIG);
+
+
 
 /**
  * Create a unique session name.

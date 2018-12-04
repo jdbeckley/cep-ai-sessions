@@ -61,5 +61,15 @@
         <script src="index.js"></script>
         <script>if (window.module) module = window.module;</script>
         <script>if (window.exports) exports = window.exports;</script>
+
+        <script type="text/html" id="contextMenu">
+            <Menu>
+                <MenuItem Id="openSession"     Label="Open Session File" Enabled="true" Checked="false"/>
+                <MenuItem Id="copySessionDocs" Label="Copy Session Docs" Enabled="true" Checked="false"/>
+                <MenuItem Id="renameSession"   Label="Rename Session"    Enabled="true" Checked="false"/>
+                <MenuItem Label="---" />
+                <MenuItem Id="deleteSession"   Label="Delete Session"    Enabled="true" Checked="false"/>
+            </Menu>
+        </script>
     </body>
 </html>
