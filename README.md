@@ -16,12 +16,18 @@ Ai-Sessions is an extension for Adobe Illustrator that will save the file paths 
 # Features
 
 1. Give each session a custom name for easy recognition
+
     <img src="./images/context-menu.png" width="500" alt="Session tooltips preview" />
+    
 2. Session tooltips for longer descriptions (see image below)
+   
    <img src="./images/sessions-tooltips.png" width="500" alt="Session tooltips preview" />
+   
 3. Collect open documents into a single folder
+    
     <img src="./images/collect-files.png" width="500" alt="Session tooltips preview" />
    
+
 # CREDITS
  
 You are free to use, modify, and distribute this script as you see fit as long as you maintain the copyright notices in the original source files. A link to the [Atomic Lotus website](https://atomiclotus.net) would be greatly appreciated as well. You must also extend the same license to users of your code. This is not to say that your original code must be open source, but the code from this project must remain free and open forever.
