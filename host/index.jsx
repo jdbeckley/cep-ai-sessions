@@ -28,8 +28,6 @@
  */
 #target illustrator
 
-$.localize = true;
-
 #include "Logger.jsx"
 #include "JSON.jsx"
 #include "Utils.jsx"
@@ -134,7 +132,9 @@ var AiSessions = (function(CONFIG) {
      */
    function doOpenCallback(filepath) {
 
-        filepath = path(CONFIG.SRCFOLDER, filepath);
+        filepath = CONFIG.SRCFOLDER + "/" +  filepath;
+
+        logger.info('FILEPATH : ' + filepath);
 
         var theFile = new File(decodeURI(filepath));
 
@@ -161,9 +161,7 @@ var AiSessions = (function(CONFIG) {
             }
         }
         else {
-            logger.error(
-                localize({en_US: "%1 - %2 - File `%3` does not exist."}, $.line, $.fileName, filepath)
-            );
+            logger.error(filepath + " does not exist");
         }
     };
 
@@ -250,10 +248,8 @@ var AiSessions = (function(CONFIG) {
         catch(e) {
             logger.error(e);
             prompt(
-                Utils.i18n(
-                    "The web address could not be automatically opened but you " +
-                    "can copy & paste the address below to your browser."
-                ),
+                "The web address could not be automatically opened but " +
+                "you can copy & paste the address below to your browser.",
                 address
             );
         }
@@ -277,11 +273,11 @@ var AiSessions = (function(CONFIG) {
         logger.info(fileList);
 
         if (! isEmpty(fileList)) {
-            logger.info(Utils.i18n("fileList is not empty. Try to copy."));
+            logger.info("fileList is not empty. Try to copy.");
             return _doCopyFiles(fileList);
         }
         else {
-            return Utils.i18n("Cannot collect open docs. File list is empty");
+            return "Cannot collect open docs. File list is empty";
         }
     };
 
@@ -312,7 +308,8 @@ var AiSessions = (function(CONFIG) {
     function _doDeleteSession(sessionFileName) {
         var result = false;
 
-        var dialogPrompt = Utils.i18n("Are you sure you want to delete the session `%1`?", sessionFileName);
+        var dialogPrompt = "Are you sure you want to delete the session `" + sessionFileName + "`";
+
         if ( confirm(dialogPrompt, sessionFileName) ) {
             if (sessionFile = getSessionFile(sessionFileName)) {
                 result = sessionFile.remove() ?
@@ -323,7 +320,7 @@ var AiSessions = (function(CONFIG) {
         else {
             result = "NOOO! Don't delete it!";
         }
-        return JSON.stringify({result: Utils.i18n(result) });
+        return JSON.stringify({result: result});
     }
 
     /**
@@ -334,7 +331,8 @@ var AiSessions = (function(CONFIG) {
     function _doRenameSession(sessionFileName) {
         var result = false;
 
-        var dialogPrompt = Utils.i18n("Enter a new name for the session `%1`?", sessionFileName);
+        var dialogPrompt ="Enter a new name for the session `" + sessionFileName + "`";
+
         if ( newName = prompt(dialogPrompt, sessionFileName) ) {
             if (newName.toLowerCase().split(".").pop() != "json") {
                 newName += ".json";
@@ -345,7 +343,7 @@ var AiSessions = (function(CONFIG) {
                     "Session file could not be renamed" ;
             }
         }
-        return JSON.stringify({result: Utils.i18n(result) });
+        return JSON.stringify({result: result });
     }
 
     /**
@@ -356,7 +354,7 @@ var AiSessions = (function(CONFIG) {
     function getDescriptionFromUser(defaultText) {
 
         var description = prompt(
-            Utils.i18n("Enter a description for session?", defaultText),
+            "Enter a description for session",
             defaultText
         );
 
@@ -418,7 +416,7 @@ var AiSessions = (function(CONFIG) {
 
         var destination, targetFolderPath, dialogPrompt;
 
-        dialogPrompt     = Utils.i18n("Choose a folder to copy the documents to");
+        dialogPrompt     = "Choose a folder to copy the documents to";
         destination      = Folder.selectDialog(dialogPrompt, Folder.myDocuments)
         targetFolderPath = new Folder(destination).absoluteURI;
 
@@ -446,7 +444,7 @@ var AiSessions = (function(CONFIG) {
             logger.error(ex);
             return ex;
         }
-        return Utils.i18n("Files copied successfully");
+        return "Files copied successfully";
     }
 
     /**
@@ -482,8 +480,8 @@ var AiSessions = (function(CONFIG) {
             return doSaveCallback();
         },
 
-        doOpenCallback: function(filePath) {
-            doOpenCallback(filePath);
+        doOpenCallback: function(filepath) {
+            return doOpenCallback(filepath);
         },
 
         initSessionsList: function() {

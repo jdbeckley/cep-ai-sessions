@@ -159,13 +159,19 @@ function initUserInterface(result) {
         $open.removeAttr('disabled');
     });
 
-    $open.mouseup(function() {
-        csxOpenSession($select.val());
+    $open.on('mouseup', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // csxOpenSession($select.val());
+        csInterface.evalScript('AiSessions.doOpenCallback("' + $select.val() + '")', function(result) {
+            console.log('AiSessions.doOpenCallback called', result);
+        });
         $open.blur();
     });
 
-    $('option', $select).dblclick(function() {
-        csxOpenSession($select.val());
+    $('option', $select).on('dblclick', function(e) {
+        // csxOpenSession($select.val());
+        csInterface.evalScript('AiSessions.doOpenCallback("' + $select.val() + '")');
     });
 
     $('option').on('contextmenu', function(e) {
@@ -393,7 +399,12 @@ function strcmp(aText, bText) {
  * @param filePath
  */
 function csxOpenSession(filePath) {
-    csInterface.evalScript('AiSessions.doOpenCallback("' + filePath + '")');
+    try {
+        csInterface.evalScript('AiSessions.doOpenCallback("' + filePath + '")');
+    }
+    catch(e) {
+        alert(e);
+    }
 }
 
 /**
