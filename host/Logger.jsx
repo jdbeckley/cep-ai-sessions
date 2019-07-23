@@ -28,6 +28,8 @@
  */
 function Logger(name, folder) {
 
+    this.name = name;
+
     /**
      * Default settings for the logger.
      * @type {{folder: string}}
@@ -133,6 +135,7 @@ Logger.prototype = {
      * @param message
      */
     log : function(message, type) {
+        this.init();
         Utils.write_file(
             this.file.absoluteURI,
             "[" + this.types[type] + "][" + new Date().toUTCString() + "] " + message
@@ -156,6 +159,12 @@ Logger.prototype = {
     create : function() {
         if (! this.file.exists) {
             return this.file.create();
+        }
+    },
+
+    init : function() {
+        if (! this.folder.exists) {
+            this.folder.create();
         }
     },
 

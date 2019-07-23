@@ -61,3 +61,572 @@ option {
     border-bottom: 1px solid #ccc;
     font-size: 1.1em;
 }
+
+/**
+ * THEME SWITCHER
+ */
+
+/*
+// #323232 = 'theme-gray-dark';
+// #535353 = 'theme-gray-medium';
+// #b8b8b8 = 'theme-gray-lite';
+// #f0f0f0 = 'theme-white';
+ */
+
+/**
+ * theme-white
+ * background-color : #f0f0f0
+ */
+body.theme-white {
+    background          : #f0f0f0;
+}
+body.theme-white * {
+    color               : #555;
+}
+body.theme-white input {
+    background-color    : #ddd     !important;
+    border-color        : #999;
+}
+body.theme-white fieldset {
+    border-color        : #999;
+}
+body.theme-white hr {
+    border-bottom       : 1px solid #999   !important;
+}
+
+body.theme-white .topcoat-icon-button,
+body.theme-white .topcoat-icon-button--large,
+body.theme-white .topcoat-icon-button--large--quiet,
+body.theme-white .topcoat-icon-button--quiet {
+
+    color               : #555;
+    text-shadow         : none;
+    background-color    : #ccc;
+    box-shadow          : none;
+    border              : 1px solid #999;
+}
+
+body.theme-white .topcoat-button,
+body.theme-white .topcoat-button--cta,
+body.theme-white .topcoat-button--large,
+body.theme-white .topcoat-button--large--cta,
+body.theme-white .topcoat-button--large--quiet,
+body.theme-white .topcoat-button--quiet {
+
+    padding             : 0 .563rem;
+    font-size           : 12px;
+    line-height         : 1.313rem;
+    letter-spacing      : 0;
+    color               : #555;
+    text-shadow         : none;
+    box-shadow          : none;
+    vertical-align      : top;
+    background-color    : #ccc;
+    border              : 1px solid #999;
+    border-radius       : 4px;
+}
+
+body.theme-white .topcoat-button--cta,
+body.theme-white .topcoat-button--large--cta {
+
+    background-color    : #ccc;
+    border              : 1px solid #999;
+    box-shadow          : none;
+    color               : #fff;
+    font-weight         : 500;
+    text-shadow         : none;
+}
+
+body.theme-white .topcoat-checkbox__checkmark:before {
+
+    width               : 1rem;
+    height              : 1rem;
+    background          : #aaa;
+    border              : 1px solid #999;
+    border-radius       : 3px;
+    box-shadow          : none;
+}
+
+body.theme-white .topcoat-checkbox__checkmark:after {
+    top                 : 2px;
+    left                : 1px;
+    opacity             : 0;
+    width               : 14px;
+    height              : 4px;
+    background          : 0 0;
+    border              : 7px solid #fff;
+    border-width        : 3px;
+    border-top          : none;
+    border-right        : none;
+    border-radius       : 1px;
+    -webkit-transform   : rotate(-50deg);
+    -ms-transform       : rotate(-50deg);
+    transform           : rotate(-50deg);
+}
+
+body.theme-white span.icomatic {
+    color               : #777 !important;
+    font-size           : 1rem;
+}
+
+/**
+ * theme-gray-lite
+ * background-color : #b8b8b8
+ */
+body.theme-gray-lite {
+    background          : #b8b8b8;
+}
+body.theme-gray-lite * {
+    color               : #333;
+}
+body.theme-gray-lite input {
+    background-color    : #ddd;
+    border-color        : #999;
+}
+body.theme-gray-lite fieldset {
+    border-color        : #999;
+}
+body.theme-gray-lite hr {
+    border-bottom: 1px solid #999   !important;
+}
+
+body.theme-gray-lite .topcoat-icon-button,
+body.theme-gray-lite .topcoat-icon-button--large,
+body.theme-gray-lite .topcoat-icon-button--large--quiet,
+body.theme-gray-lite .topcoat-icon-button--quiet {
+
+    color               : #ccc;
+    text-shadow         : none;
+    background-color    : #aaa;
+    box-shadow          : none;
+    border              : 1px solid #777;
+}
+
+body.theme-gray-lite .topcoat-button,
+body.theme-gray-lite .topcoat-button--cta,
+body.theme-gray-lite .topcoat-button--large,
+body.theme-gray-lite .topcoat-button--large--cta,
+body.theme-gray-lite .topcoat-button--large--quiet,
+body.theme-gray-lite .topcoat-button--quiet {
+    padding             : 0 .563rem;
+    font-size           : 12px;
+    line-height         : 1.313rem;
+    letter-spacing      : 0;
+    color               : #ccc;
+    text-shadow         : none;
+    box-shadow          : none;
+    vertical-align      : top;
+    background-color    : #888;
+    border              : 1px solid #777;
+    border-radius       : 4px;
+}
+
+body.theme-gray-lite .topcoat-button--cta,
+body.theme-gray-lite .topcoat-button--large--cta {
+    background-color    : #888;
+    border              : 1px solid #777;
+    box-shadow          : none;
+    color               : #fff;
+    font-weight         : 500;
+    text-shadow         : none;
+}
+
+body.theme-gray-lite .topcoat-checkbox__checkmark:before {
+    width               : 1rem;
+    height              : 1rem;
+    background          : #aaa;
+    border              : 1px solid #777;
+    border-radius       : 3px;
+    box-shadow          : none;
+}
+
+body.theme-gray-lite .topcoat-checkbox__checkmark:after {
+    top                 : 2px;
+    left                : 1px;
+    opacity             : 0;
+    width               : 14px;
+    height              : 4px;
+    background          : 0 0;
+    border              : 7px solid #ccc;
+    border-width        : 3px;
+    border-top          : none;
+    border-right        : none;
+    border-radius       : 1px;
+    -webkit-transform   : rotate(-50deg);
+    -ms-transform       : rotate(-50deg);
+    transform           : rotate(-50deg);
+}
+
+body.theme-gray-lite span.icomatic {
+    color               : #777 !important;
+    font-size           : 1rem;
+}
+
+/**
+ * theme-gray-medium
+ * background : #535353
+ */
+body.theme-gray-medium {
+    background          : #535353;
+}
+body.theme-gray-medium * {
+    color               : #eee;
+}
+
+/**
+ * theme-gray-dark
+ * background : #323232
+ */
+body.theme-gray-dark * {
+    color               : #eee;
+}
+body.theme-gray-dark input {
+    background-color    : #ddd;
+}
+body.theme-gray-dark fieldset {
+    border-color        : #000;
+}
+body.theme-gray-dark hr {
+    border-bottom       : 1px solid #000   !important;
+}
+
+body.theme-gray-dark .topcoat-icon-button,
+body.theme-gray-dark .topcoat-icon-button--large,
+body.theme-gray-dark .topcoat-icon-button--large--quiet,
+body.theme-gray-dark .topcoat-icon-button--quiet {
+
+    color               : #c6c8c8;
+    text-shadow         : 0 -1px rgba(0,0,0,.69);
+    background-color    : #595b5b;
+    box-shadow          : inset 0 1px #737373;
+    border              : 1px solid #333434;
+}
+
+
+.hidden {
+    display: none;
+}
+/* End general */
+
+/**
+ * Buttons section
+ */
+
+button span.label {
+    font-size   : 0.8rem;
+}
+
+/**
+ * Logo
+ */
+#logo,
+#logo img {
+    width    : 120px !important;
+    cursor   : pointer !important;
+    position : absolute;
+    bottom   : 5px;
+    left     : 5px;
+}
+
+/**
+ * Buy credits
+ */
+section.secondary-buttons button {
+    width     : 49%;
+    height    : 30px;
+    font-size : 0.875rem;
+}
+
+/**
+ * Top section
+ * - Progress bar
+ * - Messages
+ */
+#top-section {
+    height  : 18px !important;
+    margin  : 0 !important;
+    padding : 0 !important;
+}
+
+#top-section h2 {
+    display : block;
+    color       : #eee;
+    font-size   : 1.1em;
+    line-height : 30px;
+    margin      : 0;
+}
+
+body.disabled #top-section h2 {
+    display : block;
+}
+
+/**
+ * Icons
+ */
+.icons a {
+    color : #aaa;
+    text-decoration : none;
+    outline         : none;
+    display         : inline-block;
+    padding         : 0 3px;
+    transition      : color .9s;
+}
+
+.icons a:hover {
+    color      : #fff;
+    transition : color .9s;
+    cursor     : pointer;
+}
+
+/**
+ * UI-blocking overlay (version check message)
+ */
+#ui-blocking-overlay {
+    width : 100vw;
+    height : 100vh;
+    background-color : #2a2a2a;
+    position : absolute;
+    top : 0;
+    left : 0;
+    cursor : pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ui-blocking-overlay p {
+    font-size       : 1.1em;
+    font-weight     : normal;
+    line-height     : 1.6em;
+    color           : #ccc;
+    padding         : 0 20px;
+    margin-top      : -30px;
+}
+
+#ui-blocking-overlay a {
+    font-size: 1.1em;
+    font-weight : normal;
+    color : #ccc;
+    text-decoration : none;
+    border-bottom: 1px solid #ccc;
+}
+
+#version-check-btn {
+    margin-top : 20px;
+}
+
+#ui-blocking-overlay .icon {
+
+    color    : #ccc;
+    position : absolute;
+    z-index  : 1000;
+    right    : 10px;
+    top      : 10px;
+    cursor   : pointer;
+}
+
+
+form {
+    border              : none;
+    padding             : 0;
+    margin              : 0;
+    background-color    : transparent !important;
+}
+
+fieldset {
+    display: block;
+    margin-inline-start     : 0;
+    margin-inline-end       : 0;
+    padding-block-start     : 0.35em;
+    padding-inline-start    : 0.35em;
+    padding-inline-end      : 0.75em;
+    padding-block-end       : 0.75em;
+    margin                  : 0.25em;
+    padding                 : 0.5em;
+    min-inline-size         : min-content;
+    border-width            : 1px;
+    border-image            : initial;
+}
+
+fieldset p,
+fieldset div,
+fieldset span,
+fieldset legend {
+    color : #ccc;
+}
+
+fieldset legend {
+    text-align      : left;
+    font-size       : 0.6rem;
+    margin          : 0 2px;
+    padding         : 0 2px;
+    font-weight     : normal;
+}
+
+input {
+    background : #444;
+}
+
+fieldset label {
+    text-align : left;
+    font-size  : 0.6rem;
+    padding    : 0;
+}
+
+.row [class*=col-] {
+    text-align : left;
+}
+
+.row {
+    padding : .1em 0;
+}
+
+fieldset.output [type=text] {
+    width : 100%;
+}
+
+fieldset.output .row [type=checkbox] + label {
+    padding-left : 24px;
+}
+
+[type=checkbox]:focus,
+[type=checkbox]:active,
+[type=checkbox]:visited {
+    outline : none !important;
+}
+
+fieldset [type=number] {
+    width : 3.8rem;
+}
+
+[type=text] {
+    border-radius : 3px;
+}
+
+#merge-btn {
+    float       : right;
+}
+
+#save-btn {
+    float       : left;
+}
+
+.topcoat-text-input,
+.topcoat-text-input--large {
+
+    line-height         : 1rem;
+    font-size           : 0.6rem;
+    letter-spacing      : 0;
+    padding             : 0 .4rem;
+    border              : 1px solid #666;
+    border-radius       : 2px;
+    background-color    : #444;
+    box-shadow          : inset 0 1px rgba(0,0,0,.05);
+    color               : #c6c8c8;
+    vertical-align      : top;
+}
+
+textarea:hover, textarea:focus, select:hover, select:focus,
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):hover,
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):focus {
+    border-color : #3d96f3 !important;
+    box-shadow: none;
+}
+
+button:hover, button:focus,
+[type="button"]:hover,
+[type="button"]:focus,
+[type="submit"]:hover,
+[type="submit"]:focus,
+[type="reset"]:hover,
+[type="reset"]:focus,
+a.button:hover,
+a.button:focus,
+label.button:hover,
+label.button:focus,
+.button:hover,
+.button:focus,
+a[role="button"]:hover,
+a[role="button"]:focus,
+label[role="button"]:hover,
+label[role="button"]:focus,
+[role="button"]:hover,
+[role="button"]:focus {
+
+    background   : inherit;
+    border-color : #333;
+}
+
+.file-name .col-sm-1,
+.choose-folder .col-sm-1,
+.file-name .row.cols-sm-1 > *,
+.choose-folder .row.cols-sm-1 > * {
+    max-width       : 10%;
+    flex-basis      : 10%;
+}
+
+.file-name .col-sm-11,
+.choose-folder .col-sm-11,
+.file-name .row.cols-sm-11 > *,
+.choose-folder .row.cols-sm-11 > * {
+    max-width       : 90%;
+    flex-basis      : 90%;
+}
+
+.file-name [type=text],
+.choose-folder [type=text] {
+
+    height          : 28px;
+    width           : 98% !important;
+    float           : right;
+}
+
+.topcoat-button--cta:focus,
+.topcoat-button--large--cta:focus {
+    background-color: #4ca1e4;
+}
+
+.topcoat-checkbox__checkmark:before {
+    width               : 1rem;
+    height              : 1rem;
+    background          : #595b5b;
+    border              : 1px solid #333434;
+    border-radius       : 3px;
+    box-shadow          : inset 0 1px #737373;
+}
+
+label.topcoat-checkbox span.text {
+    display : inline-block;
+    padding-left : 1.3rem;
+}
+
+.topcoat-checkbox__checkmark {
+    position: relative;
+    display: inline-block;
+    left: 0;
+}
+
+.topcoat-checkbox__checkmark:after {
+    top                 : 2px;
+    left                : 1px;
+    opacity             : 0;
+    width               : 14px;
+    height              : 4px;
+    background          : transparent;
+    border              : 7px solid #c6c8c8;
+    border-width        : 3px;
+    border-top          : none;
+    border-right        : none;
+    border-radius       : 1px;
+    -webkit-transform   : rotate(-50deg);
+    -ms-transform       : rotate(-50deg);
+    transform           : rotate(-50deg);
+}
+
+span.icomatic {
+    color               : #A5A7A7 !important;
+    font-size           : 1rem;
+}
+
+a, button, .button { cursor : pointer !important }

@@ -56,7 +56,9 @@ csInterface.evalScript("AiSessions.getConfig()", function(result) {
         CONFIG = JSON.parse(result);
 
         csInterface.evalScript('AiSessions.initSessionsList()', function(result) {
-            console.log('AiSessions.initSessionsList() returned successfully ', result);
+            console.log('result', result);
+            console.log('typeof result', typeof result);
+            console.log('AiSessions.initSessionsList() returned successfully');
             initUserInterface(result);
         });
     }
@@ -71,13 +73,26 @@ csInterface.evalScript("AiSessions.getConfig()", function(result) {
  */
 function initUserInterface(result) {
 
-    var $select = $("#sessions"),
-        $open   = $("#open-button"),
-        $save   = $("#save-button");
+    var $select  = $("#sessions"),
+        $open    = $("#open-button"),
+        $save    = $("#save-button"),
+        $message = $("#message");
 
-    console.log(result);
+    var sessions = [];
 
-    var sessions = eval(result);
+    try {
+        var test = eval(result);
+        if (typeof test === 'object') {
+            if (typeof test.length !== 'undefined' && test.length > 0) {
+                sessions = test;
+            }
+        }
+    }
+    catch(e) {
+        console.error(e);
+    }
+
+    console.log('initUserInterface with ' + sessions.length + ' sessions');
 
     clearMessage();
 
@@ -92,99 +107,89 @@ function initUserInterface(result) {
             $message.fadeOut(200);
         }, 4000);
     }
-    else {
 
-        $('option', $select).remove();
+    $('option', $select).remove();
 
-        for (var i=0; i < sessions.length; i++) {
+    for (var i=0; i < sessions.length; i++) {
 
-            var description, $option;
+        var description, $option;
 
-            var theFile       = decodeURI(sessions[i]),
-                optionText    = decodeURI(theFile.replace(".json", "")),
-                formattedDate = formatSessionDate(theFile);
+        var theFile       = decodeURI(sessions[i]),
+            optionText    = decodeURI(theFile.replace(".json", "")),
+            formattedDate = formatSessionDate(theFile);
 
-            if (formattedDate.indexOf("Invalid") == -1) {
-                optionText = formattedDate;
-            }
-
-            description = optionText;
-
-            try {
-                console.log('CONFIG.SRCFOLDER', CONFIG.SRCFOLDER);
-                console.log('filepath', path(CONFIG.SRCFOLDER, theFile));
-
-                result = readJsonFile(path(CONFIG.SRCFOLDER, theFile));
-
-                if (result.err === undefined) {
-                    if (result.description !== undefined) {
-                        description = result.description;
-                    }
-                }
-                else {
-                    console.error(str('fs.readFile resturned error code {0}', result.err));
-                }
-            }
-            catch(e) {
-                console.error(e);
-                // console.info('Session description could not be read. Skipping')
-            }
-
-            $option = $("<option/>")
-                .val(basename(theFile))
-                .text(optionText)
-                .attr('title', description);
-            $select.append($option);
+        if (formattedDate.indexOf("Invalid") == -1) {
+            optionText = formattedDate;
         }
 
-        if (window.docCount > 0) {
-            $save.removeAttr('disabled');
+        description = optionText;
+
+        try {
+            console.log('CONFIG.SRCFOLDER : ' + CONFIG.SRCFOLDER);
+            console.log('filepath : ' + CONFIG.SRCFOLDER + '/' + theFile);
+
+            result = readJsonFile(path(CONFIG.SRCFOLDER, theFile));
+
+            if (result.err === undefined) {
+                if (result.description !== undefined) {
+                    description = result.description;
+                }
+            }
+            else {
+                console.error(str('fs.readFile resturned error code {0}', result.err));
+            }
+        }
+        catch(e) {
+            console.error(e);
+            // console.info('Session description could not be read. Skipping')
         }
 
-        $select.change(function() {
-            $open.removeAttr('disabled');
-        });
-
-        $open.mouseup(function() {
-            csxOpenSession($select.val());
-            $open.blur();
-        });
-
-        $('option', $select).dblclick(function() {
-            csxOpenSession($select.val());
-        });
-
-        $('option').on('contextmenu', function(e) {
-
-            $(this).attr("selected", true);
-
-            try {
-                csInterface.setContextMenu($("#contextMenu").text(), contextMenuHandler);
-            }
-            catch(ex) {
-                console.error(ex);
-            }
-            csInterface.addEventListener("com.adobe.csxs.events.contextMenuClicked", contextMenuHandler);
-        });
-
-        $('option', $select).hover(
-            function() {
-
-            },
-            function() {
-
-            }
-        );
-
-        $save.off('mouseup').on('mouseup', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            csxSaveSession(initUserInterface);
-            $save.blur();
-        });
-
-        initFlyoutMenu();
+        $option = $("<option/>")
+            .val(basename(theFile))
+            .text(optionText)
+            .attr('title', description);
+        $select.append($option);
     }
+
+    if (window.docCount > 0) {
+        $save.removeAttr('disabled');
+    }
+
+    $select.change(function() {
+        $open.removeAttr('disabled');
+    });
+
+    $open.mouseup(function() {
+        csxOpenSession($select.val());
+        $open.blur();
+    });
+
+    $('option', $select).dblclick(function() {
+        csxOpenSession($select.val());
+    });
+
+    $('option').on('contextmenu', function(e) {
+
+        $(this).attr("selected", true);
+
+        try {
+            csInterface.setContextMenu($("#contextMenu").text(), contextMenuHandler);
+        }
+        catch(ex) {
+            console.error(ex);
+        }
+        csInterface.addEventListener("com.adobe.csxs.events.contextMenuClicked", contextMenuHandler);
+    });
+
+    $save.off('mouseup').on('mouseup', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        csxSaveSession(initUserInterface);
+        $save.blur();
+    });
+
+    initFlyoutMenu();
+
 };
 
 /**
@@ -457,7 +462,7 @@ function logMessage(message, type) {
 
 function refresh() {
     csInterface.evalScript('AiSessions.initSessionsList()', function(result) {
-        console.log('AiSessions.initSessionsList() returned successfully ', result);
+        console.log('AiSessions.initSessionsList() returned successfully');
         initUserInterface(result);
     });
 }

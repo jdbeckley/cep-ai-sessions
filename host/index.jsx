@@ -67,10 +67,10 @@ var CONFIG = {
     SRCFOLDER        : myDocuments + '/ai-sessions',
     LOGFOLDER        : myDocuments + '/ai-sessions/logs',
     LOGFILE          : myDocuments + '/ai-sessions/logs/' + SESSION_NAME  + '.log',
-    NO_OPEN_DOCS     : localize({en_US: 'There are no open docs to save for this session'}),
-    NO_DOC_SELECTED  : localize({en_US: 'You have not selected a session to open'}),
-    NO_DOCS_TO_COPY  : localize({en_US: 'There are no open documents to copy'}),
-    SESSION_SAVED    : localize({en_US: 'Your Session Was Saved!'}),
+    NO_OPEN_DOCS     : 'There are no open docs to save for this session',
+    NO_DOC_SELECTED  : 'You have not selected a session to open',
+    NO_DOCS_TO_COPY  : 'There are no open documents to copy',
+    SESSION_SAVED    : 'Your Session Was Saved!',
     JSON_EXT         : ".json",
     TEXT_EXT         : ".txt"
 };
@@ -528,6 +528,16 @@ var AiSessions = (function(CONFIG) {
 
         openLogFile : function() {
             return _doOpenLogFile();
+        },
+
+        log : function(message, type) {
+            try {
+                logger.info( message );
+                return 'ok';
+            }
+            catch(e) {
+                return e;
+            }
         }
     }
 
@@ -561,6 +571,11 @@ function getDocCount() {
  * @param type
  */
 function csxLogger(message, type) {
-    var logger = new Logger(CONFIG.APP_NAME, CONFIG.LOGFOLDER);
-    logger.log( message, type );
+    try {
+        logger.info( message );
+        return 'ok';
+    }
+    catch(e) {
+        return e;
+    }
 }
