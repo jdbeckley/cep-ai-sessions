@@ -18,11 +18,11 @@ Ai-Sessions is an extension for Adobe Illustrator that will save the file paths 
 1. Give each session a custom name for easy recognition
 2. Session tooltips for longer descriptions (see image below)
    
-   <img src="./images/sessions-tooltips.png" width="250px" alt="Session tooltips preview" />
+   <img src="./images/sessions-tooltips.png" width="500" alt="Session tooltips preview" />
    
 3. Collection open documents into a single folder
     
-    <img src="./images/collect-files.png" width="250px" alt="Session tooltips preview" />
+    <img src="./images/collect-files.png" width="500" alt="Session tooltips preview" />
    
 
 # CREDITS
