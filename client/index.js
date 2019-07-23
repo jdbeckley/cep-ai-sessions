@@ -50,20 +50,10 @@ var MENU_ITEMS = {
     RELOAD        : "reload"
 };
 
-// var HOME = '/';
-// csInterface.evalScript("$.getenv('HOME')", function(result) {
-//     HOME = result;
-// });
-
 var CONFIG = {};
 csInterface.evalScript("AiSessions.getConfig()", function(result) {
     try {
         CONFIG = JSON.parse(result);
-        $(function() {
-            // refresh();
-
-
-        });
 
         csInterface.evalScript('AiSessions.initSessionsList()', function(result) {
             console.log('AiSessions.initSessionsList() returned successfully ', result);
@@ -266,127 +256,9 @@ function formatSessionDate(theFile) {
 }
 
 /**
- * Populates the sessions select list.
- * @param {*} result
+ * Callback for handling context menu events.
+ * @param menuId
  */
-// function initUserInterface(result) {
-//
-//     var $select = $("#sessions"),
-//         $open   = $("#open-button"),
-//         $save   = $("#save-button");
-//
-//     // console.log( result );
-//
-//     var sessions = eval(result);
-//
-//     clearMessage();
-//
-//     if (typeof(sessions) === 'string') {
-//         showMessage(result);
-//         return;
-//     }
-//
-//     if (isEmpty(sessions)) {
-//         showMessage("You have no saved sessions");
-//         setTimeout(function() {
-//             $message.fadeOut(200);
-//         }, 4000);
-//     }
-//     else {
-//
-//         $('option', $select).remove();
-//
-//         for (var i=0; i < sessions.length; i++) {
-//
-//             var description, $option;
-//
-//             var theFile       = decodeURI(sessions[i]),
-//                 optionText    = decodeURI(theFile.replace(".json", "")),
-//                 formattedDate = formatSessionDate(theFile);
-//
-//             if (formattedDate.indexOf("Invalid") == -1) {
-//                 optionText = formattedDate;
-//             }
-//
-//             description = optionText;
-//
-//             try {
-//                 console.log('CONFIG.SRCFOLDER', CONFIG.SRCFOLDER);
-//                 console.log('filepath', path(CONFIG.SRCFOLDER, theFile));
-//
-//                 result = readJsonFile(path(CONFIG.SRCFOLDER, theFile));
-//
-//                 if (result.err === undefined) {
-//                     if (result.description !== undefined) {
-//                         description = result.description;
-//                     }
-//                 }
-//                 else {
-//                     console.error(str('fs.readFile resturned error code {0}', result.err));
-//                 }
-//             }
-//             catch(e) {
-//                 console.error(e);
-//                 // console.info('Session description could not be read. Skipping')
-//             }
-//
-//             $option = $("<option/>")
-//                 .val(basename(theFile))
-//                 .text(optionText)
-//                 .attr('title', description);
-//             $select.append($option);
-//         }
-//
-//         if (window.docCount > 0) {
-//             $save.removeAttr('disabled');
-//         }
-//
-//         $select.change(function() {
-//             $open.removeAttr('disabled');
-//         });
-//
-//         $open.mouseup(function() {
-//             csxOpenSession($select.val());
-//             $open.blur();
-//         });
-//
-//         $('option', $select).dblclick(function() {
-//             csxOpenSession($select.val());
-//         });
-//
-//         $('option').on('contextmenu', function(e) {
-//
-//             $(this).attr("selected", true);
-//
-//             try {
-//                 csInterface.setContextMenu($("#contextMenu").text(), contextMenuHandler);
-//             }
-//             catch(ex) {
-//                 console.error(ex);
-//             }
-//             csInterface.addEventListener("com.adobe.csxs.events.contextMenuClicked", contextMenuHandler);
-//         });
-//
-//         $('option', $select).hover(
-//             function() {
-//
-//             },
-//             function() {
-//
-//             }
-//         );
-//
-//         $save.off('mouseup').on('mouseup', function(e) {
-//             e.preventDefault();
-//             e.stopPropagation();
-//             csxSaveSession(initUserInterface);
-//             $save.blur();
-//         });
-//
-//         initFlyoutMenu();
-//     }
-// };
-
 function contextMenuHandler(menuId) {
 
     var $select  = $("#sessions");
