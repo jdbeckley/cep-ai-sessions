@@ -3,7 +3,7 @@
 
 Donations help open source developers, who are often self-employed freelancers, continue to create free resources. You can donate to this project using the button below.
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SZQVVSQDZS75A)
+[![Donate](./images/donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SZQVVSQDZS75A)
 
 ***
 
@@ -17,9 +17,13 @@ Ai-Sessions is an extension for Adobe Illustrator that will save the file paths 
 
 1. Give each session a custom name for easy recognition
 2. Session tooltips for longer descriptions (see image below)
-   ![Session Tooltips](./images/sessions-tooltips.png)
+   
+   <img src="./images/sessions-tooltips.png" width="250px" alt="Session tooltips preview" />
+   
 3. Collection open documents into a single folder
-   ![Collection Open Files](./images/collect-files.png)   
+    
+    <img src="./images/collect-files.png" width="250px" alt="Session tooltips preview" />
+   
 
 # CREDITS
  
