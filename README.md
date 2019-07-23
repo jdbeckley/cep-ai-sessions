@@ -1,6 +1,9 @@
-# Donations
+***
+#### Support Open Source Development
 
-I am a freelance developer and your donations help me continue to create free resources. You can donate to this project via [my PayPal page](https://paypal.me/iconify/5).
+Donations help open source developers, who are often self-employed freelancers, continue to create free resources. You can donate to this project using the button below.
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SZQVVSQDZS75A)
 
 ***
 
@@ -9,6 +12,14 @@ I am a freelance developer and your donations help me continue to create free re
 Ai-Sessions is an extension for Adobe Illustrator that will save the file paths of all open Illustrator files in {MY_DOCUMENTS}/ai-sessions/ai-YYYY-MM-DD-r[0-9].json so you can easily re-open open documents in your "work session". The file paths are saved in a JSON object. 
 
 ![Ai Sessions screen capture](./images/ai-sessions.png)
+
+# Features
+
+1. Give each session a custom name for easy recognition
+2. Session tooltips for longer descriptions (see image below)
+   ![Session Tooltips](./images/sessions-tooltips.png)
+3. Collection open documents into a single folder
+   ![Collection Open Files](./images/collect-files.png)   
 
 # CREDITS
  

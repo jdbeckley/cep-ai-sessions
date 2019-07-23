@@ -35,7 +35,16 @@ $.localize = true;
 #include "Utils.jsx"
 #include "Helpers.jsx"
 
-var SESSION_NAME = getSessionName();
+var HOME         = $.getenv('HOME'),
+    SESSION_NAME = getSessionName(),
+    myDocuments  = Folder.myDocuments.absoluteURI;
+
+try {
+    myDocuments = unmac(myDocuments);
+}
+catch(e) {
+    /* Nothing to do for now */
+}
 
 /**
  * @type {{
@@ -54,10 +63,10 @@ var CONFIG = {
     APP_NAME         : "ai-sessions",
     USER             : $.getenv('USER'),
     HOME             : $.getenv('HOME'),
-    DOCUMENTS        : Folder.myDocuments,
-    SRCFOLDER        : Folder.myDocuments + '/ai-sessions',
-    LOGFOLDER        : Folder.myDocuments + '/ai-sessions/logs',
-    LOGFILE          : Folder.myDocuments + '/ai-sessions/logs/' + SESSION_NAME  + '.log',
+    DOCUMENTS        : myDocuments,
+    SRCFOLDER        : myDocuments + '/ai-sessions',
+    LOGFOLDER        : myDocuments + '/ai-sessions/logs',
+    LOGFILE          : myDocuments + '/ai-sessions/logs/' + SESSION_NAME  + '.log',
     NO_OPEN_DOCS     : localize({en_US: 'There are no open docs to save for this session'}),
     NO_DOC_SELECTED  : localize({en_US: 'You have not selected a session to open'}),
     NO_DOCS_TO_COPY  : localize({en_US: 'There are no open documents to copy'}),
@@ -66,6 +75,7 @@ var CONFIG = {
     TEXT_EXT         : ".txt"
 };
 
+
 /**
  * The local scope logger object.
  * @type {Logger}
@@ -73,6 +83,7 @@ var CONFIG = {
 var logger = new Logger(CONFIG.APP_NAME, CONFIG.LOGFOLDER);
 
 logger.info("init " + SESSION_NAME);
+logger.info(JSON.stringify(CONFIG));
 
 /**
  * Run the script using the Module patter.
@@ -86,7 +97,7 @@ var AiSessions = (function(CONFIG) {
 
         var files = new Folder(CONFIG.SRCFOLDER).getFiles("*.json");
         var sessions = [];
-        for (i=0; i<files.length; i++) {
+        for (var i = 0; i < files.length; i++) {
             sessions.push(files[i].name);
         }
 
@@ -123,7 +134,7 @@ var AiSessions = (function(CONFIG) {
      */
    function doOpenCallback(filepath) {
 
-        filepath = CONFIG.SRCFOLDER + "/" + filepath;
+        filepath = path(CONFIG.SRCFOLDER, filepath);
 
         var theFile = new File(decodeURI(filepath));
 
@@ -161,7 +172,9 @@ var AiSessions = (function(CONFIG) {
      */
     function doSaveCallback() {
 
-        var openDocs, sessionName;
+        var openDocs,
+            sessionName,
+            description;
 
         if (app.documents.length == 0) {
             alert(CONFIG.NO_OPEN_DOCS);
@@ -174,9 +187,19 @@ var AiSessions = (function(CONFIG) {
 
                 CONFIG.LOGFILE = sessionName + ".log";
 
+                description = getDescriptionFromUser(sessionName);
+
+                var json = str(
+                    '{\n"files":[\n\t{0}\n], \n"description" : "{1}"\n}',
+                    openDocs.join(',\n\t'),
+                    description
+                );
+
+                logger.info(json);
+
                 Utils.write_file(
                     CONFIG.SRCFOLDER + "/" + sessionName + ".json",
-                    '{"files":[\r' + '    ' + openDocs.join(',\r    ') + '\r]}',
+                    '{"files":[' + '    ' + openDocs.join(', ') + '], "description" : "' + description + '"}',
                     true
                 );
 
@@ -326,6 +349,42 @@ var AiSessions = (function(CONFIG) {
     }
 
     /**
+     * Prompts user for description.
+     * @param defaultText
+     * @returns {string}
+     */
+    function getDescriptionFromUser(defaultText) {
+
+        var description = prompt(
+            Utils.i18n("Enter a description for session?", defaultText),
+            defaultText
+        );
+
+        return isEmpty(description) ? defaultText : description;
+    }
+
+    /**
+     * Add description to session file JSON.
+     * @param sessionFileName
+     * @returns {string}
+     * @private
+     */
+    function _doAddDescription(sessionFileName) {
+
+        var session, result, sessionFilePath;
+
+        sessionFilePath = CONFIG.SRCFOLDER + "/" + sessionFileName;
+
+        session = Utils.read_json_file(sessionFilePath);
+
+        session.description = getDescriptionFromUser(session.description || sessionFileName);
+
+        result = Utils.write_file(sessionFilePath, JSON.stringify(session), true);
+
+        return JSON.stringify({"result": result});
+    }
+
+    /**
      * Private function to open a session file.
      * @param sessionFileName
      * @private
@@ -447,6 +506,10 @@ var AiSessions = (function(CONFIG) {
             return _doDeleteSession(sessionFileName);
         },
 
+        doAddDescription : function(sessionFileName) {
+            _doAddDescription(sessionFileName)
+        },
+
         doRenameSession : function(sessionFileName) {
             return _doRenameSession(sessionFileName);
         },
@@ -457,6 +520,10 @@ var AiSessions = (function(CONFIG) {
 
         doCopySessionDocs : function(sessionFileName) {
             return _doCopySessionDocs(sessionFileName);
+        },
+
+        getConfig : function() {
+            return JSON.stringify(CONFIG);
         },
 
         openLogFile : function() {

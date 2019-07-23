@@ -35,17 +35,8 @@ select#sessions {
     width: 100%;
 }
 
-body div,
-body select {
-
-}
-
 section {
     padding: 15px 0;
-}
-
-section.messages {
-
 }
 
 #message {

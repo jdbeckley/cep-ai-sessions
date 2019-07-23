@@ -27,6 +27,33 @@
  */
 
 /**
+ * Context constants.
+ * @type {{HOST: string, CLIENT: string}}
+ */
+var Contexts = {
+    HOST    : 'HOST',
+    CLIENT  : 'CLIENT',
+    JS      : 'JS',
+    JSX     : 'JSX',
+    UNKNOWN : 'UNKNOWN',
+    ERR     : 'ERROR'
+};
+
+/**
+ * Operating system constants.
+ * @type {{
+ *     UNKNOWN : string,
+ *     WIN     : string,
+ *     MAC     : string
+ * }}
+ */
+var Platforms = {
+    MAC     : 'mac',
+    WIN     : 'windows',
+    UNKNOWN : 'unknown'
+};
+
+/**
  * Test if this class supports the Ai Object type. Before you can use
  * this method, define an array in the global scope named `supportedTypes`.
  * The underscore indicates the array is meant to be private.
@@ -551,4 +578,229 @@ function pathItemToSVG(path)
     }
 
     return answer;
+}
+
+/**
+ * Loops through a collection, applying a callback (same as Array.map)
+ * @author https://forums.adobe.com/people/CarlosCanto
+ *
+ * Example:
+ *  function showAllLayers() {
+ *      forEach(document.layers, function(layer) {
+ *          layer.visible = true;
+ *      });
+ *  }
+ *
+ * @param collection
+ * @param fn
+ */
+function forEach(collection, fn) {
+    var n = collection.length;
+    for(var i=0; i<n; ++i) {
+        fn(collection[i]);
+    }
+}
+
+/**
+ * Replace a value in a string.
+ * @param {string}  theText
+ * @param {string}  s
+ * @returns {*}
+ */
+function str() {
+    if (! arguments.length) {
+        throw new Error('`str({string}, {*})` requires at least 2 arguments');
+    }
+    if (! String.prototype.format) {
+        String.prototype.format = function() {
+            var formatted = this;
+            for (var i = 0; i < arguments.length; i++) {
+                var regexp = new RegExp('\\{'+i+'\\}', 'gi');
+                formatted = formatted.replace(regexp, arguments[i]);
+            }
+            return formatted;
+        };
+    }
+    var theText = arguments[0];
+    var theVars = [];
+    for (var i = 1; i < arguments.length; i++) {
+        theVars.push(arguments[i]);
+    }
+    return theText.format.apply(theText, theVars);
+}
+
+/**
+ * Replace tokens in a string with key => value paired vars.
+ * @param theText
+ * @param theVars
+ * @returns {*}
+ */
+function _t(theText, theVars) {
+    for (token in theVars) {
+        theText = theText.replace(
+            new RegExp("{" + token + "}","g"),
+            theVars[token]
+        );
+    }
+    return theText;
+}
+
+/**
+ * Get basename of file path.
+ * @param path
+ * @returns {*}
+ */
+function basename(path) {
+    var basename = null;
+    try {
+        basename = path.split('/').pop();
+    }
+    catch(e) {
+        logError(e.message);
+    }
+    return basename;
+}
+
+/**
+ * Ensures a Path ends with a trailing slash.
+ * @param   {string}    path
+ * @returns {string}
+ */
+function slash(path) {
+    if (path.charAt(path.length-1) != '/') {
+        path += '/';
+    }
+    return path;
+};
+
+/**
+ * Appends a string to a base string using a divider.
+ * @param   {string} base
+ * @param   {string} add
+ * @param   {string} divider
+ * @returns {string}
+ * @deprecated
+ */
+function pack(base, add, divider) {
+    divider = typeof(divider) == 'undefined' ? '/' : divider;
+    if (base.charAt(base.length-1) != divider) {
+        base += divider;
+    }
+    return base + add;
+}
+
+/**
+ * Appends a string to a base string using a divider.
+ * @param   {string} path
+ * @param   {string} subpath
+ * @param   {string} separator
+ * @returns {string}
+ */
+function path(path, subpath, separator) {
+    if (typeof HOME !== 'undefined') {
+        path = path.replace('~/', slash(HOME));
+    }
+    separator = typeof(separator) == 'undefined' ? '/' : separator;
+    if (path.charAt(path.length-1) != separator) {
+        path += separator;
+    }
+    return path + subpath;
+}
+
+/**
+ * Reads a JSON file regardless of JS or JSX context.
+ * @param   {string}    filepath
+ * @returns {object}
+ */
+function readJsonFile(filepath) {
+    var result, data;
+
+    try {
+        result = window.cep.fs.readFile(filepath);
+
+        if (result.err === 0) {
+            data = JSON.parse(result.data);
+        }
+        else {
+            data = {err: result.err, message: 'window.cep.fs could not read the file'};
+        }
+    }
+    catch(e) {
+        var theFile = new File(filepath);
+        try {
+            theFile.open('r', undefined, undefined);
+            result = theFile.read();
+            theFile.close();
+            data = JSON.parse(result);
+        }
+        catch(e) {
+            try { theFile.close(); }catch(e){};
+            if (typeof Utils.logger !== 'undefined') {
+                Utils.logger(e, $.line, $.fileName);
+            }
+            data = {err: 1, message: e.message};
+        }
+    }
+    return data;
+}
+
+/**
+ * Removes the alias to the user's home directory on Mac because
+ * it breaks some functions of the Folder object.
+ * @param   {string}    thePath
+ * @returns {string}
+ */
+function unmac(thePath) {
+
+    if (getOS() === Platforms.MAC && thePath.indexOf('~/') !== -1) {
+        thePath = thePath.replace('~/', getContext() === Contexts.JSX ? $.getenv('HOME') + '/': HOME + '/');
+    }
+
+    return thePath;
+}
+
+/**
+ * Determine the current OS in JS or JSX context.
+ * @returns {string}
+ */
+function getOS() {
+
+    var os, platform;
+
+    platform = Platforms.UNKNOWN;
+
+    if (getContext() === Contexts.JS) {
+        os = csInterface.getOSInformation().toLowerCase();
+    }
+    else if (getContext() === Contexts.JSX) {
+        os = $.os.toLowerCase();
+    }
+
+    if (os.indexOf('win') !== -1) {
+        platform = Platforms.WIN;
+    }
+    else if (os.indexOf('mac') !== -1) {
+        platform = Platforms.MAC;
+    }
+
+    return platform;
+}
+
+/**
+ * Get the current CEP Execution context (JS or JSX)
+ *
+ *     window.cep.fs.stat(path).data.isDirectory();  // Returns 'true' if 'path' is a directory.
+ *     window.cep.fs.stat(path).data.isFile();       // Returns 'true' if 'path' is a file.
+ *     window.cep.fs.stat(path).err != window.cep.fs.ERR_NOT_FOUND;  // Returns 'true' if 'path' exists.
+ *
+ * @returns {string}
+ */
+function getContext() {
+    if (typeof window !== 'undefined') {
+        return Contexts.JS;
+    }
+    else if (typeof File !== 'undefined') {
+        return Contexts.JSX;
+    }
+    return Contexts.UNKNOWN;
 }

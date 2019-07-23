@@ -331,7 +331,7 @@ select.docNav {
   }
   #main-header nav li.selected a {
     color: #373435;
-  } 
+  }
   #slide-menu-button{
     display: none;
   }
@@ -504,5 +504,39 @@ select.docNav {
   }
 }
 
+option {
+  cursor          : pointer;
+}
 
+option:hover {
+  background      : #ddffff;
+}
 
+.ui-tooltip {
+    padding         : 8px;
+    position        : absolute;
+    z-index         : 9999;
+    max-width       : 264px;
+    width           : 264px;
+    margin          : 0;
+
+    font-size       : .8em;
+    text-align      : center;
+
+    color           : #fff;
+    background      : #333;
+    border          : none !important;
+    box-shadow      : none !important;
+    border-radius   : 0;
+}
+
+.ui-widget,
+.ui-widget-shadow,
+.ui-widget-content,
+.ui-corner-all {
+  border : none !important;
+}
+
+body .ui-tooltip {
+  border-width    : 0px !important;
+}

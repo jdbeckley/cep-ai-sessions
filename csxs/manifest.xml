@@ -34,19 +34,24 @@
                     <Menu>Ai Sessions</Menu>
                     <Geometry>
                         <Size>
-                            <Height>430</Height>
-                            <Width>350</Width>
+                            <Width>300</Width>
+                            <Height>360</Height>
                         </Size>
                         <MaxSize>
-                            <Height>430</Height>
-                            <Width>350</Width>
+                            <Width>300</Width>
+                            <Height>360</Height>
                         </MaxSize>
                         <MinSize>
-                            <Height>430</Height>
-                            <Width>350</Width>
+                            <Width>300</Width>
+                            <Height>360</Height>
                         </MinSize>
                     </Geometry>
-                    <Icons />
+                    <Icons>
+                        <Icon Type="Normal">./icon.png</Icon>
+                        <Icon Type="RollOver">./icon.png</Icon>
+                        <Icon Type="DarkNormal">./icon.png</Icon>
+                        <Icon Type="DarkRollOver">./icon.png</Icon>
+                    </Icons>
                 </UI>
             </DispatchInfo>
         </Extension>
